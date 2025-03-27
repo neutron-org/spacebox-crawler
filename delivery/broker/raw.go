@@ -19,3 +19,7 @@ func (b *Broker) PublishRawBlockResults(_ context.Context, br interface{}) error
 func (b *Broker) PublishRawGenesis(_ context.Context, g interface{}) error {
 	return b.marshalAndProduce(RawGenesis, g)
 }
+
+func (b *Broker) PublishRawSlinkyPrices(ctx context.Context, prices interface{}) error {
+	return b.marshalAndProduce(RawSlinkyPrices, prices)
+}

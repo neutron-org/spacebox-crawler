@@ -3,6 +3,7 @@ package raw
 import (
 	"github.com/rs/zerolog"
 
+	grpcClient "github.com/bro-n-bro/spacebox-crawler/v2/client/grpc"
 	rpcClient "github.com/bro-n-bro/spacebox-crawler/v2/client/rpc"
 	"github.com/bro-n-bro/spacebox-crawler/v2/modules/utils"
 	"github.com/bro-n-bro/spacebox-crawler/v2/types"
@@ -18,16 +19,18 @@ var (
 )
 
 type Module struct {
-	log       *zerolog.Logger
-	rpcClient *rpcClient.Client
-	broker    broker
+	log        *zerolog.Logger
+	rpcClient  *rpcClient.Client
+	grpcClient *grpcClient.Client
+	broker     broker
 }
 
-func New(b broker, cli *rpcClient.Client) *Module {
+func New(b broker, rpcCli *rpcClient.Client, grpcCli *grpcClient.Client) *Module {
 	return &Module{
-		log:       utils.NewModuleLogger(ModuleName),
-		broker:    b,
-		rpcClient: cli,
+		log:        utils.NewModuleLogger(ModuleName),
+		broker:     b,
+		rpcClient:  rpcCli,
+		grpcClient: grpcCli,
 	}
 }
 

@@ -28,6 +28,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.20.5
 	github.com/rs/zerolog v1.33.0
+	github.com/skip-mev/slinky v1.2.0
 	go.mongodb.org/mongo-driver v1.12.1
 	golang.org/x/crypto v0.32.0
 	golang.org/x/sync v0.10.0
@@ -200,7 +201,6 @@ require (
 	github.com/shamaton/msgpack/v2 v2.2.0 // indirect
 	github.com/skip-mev/block-sdk/v2 v2.1.5 // indirect
 	github.com/skip-mev/feemarket v1.1.1 // indirect
-	github.com/skip-mev/slinky v1.2.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect

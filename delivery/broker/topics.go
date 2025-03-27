@@ -5,8 +5,9 @@ var (
 	RawBlockResults Topic = newTopic("raw_block_results")
 	RawGenesis      Topic = newTopic("raw_genesis")
 	RawTransaction  Topic = newTopic("raw_transaction")
+	RawSlinkyPrices Topic = newTopic("raw_slinky_prices")
 
-	rawTopics = Topics{RawBlock, RawTransaction, RawBlockResults, RawGenesis}
+	rawTopics = Topics{RawBlock, RawTransaction, RawBlockResults, RawSlinkyPrices, RawGenesis}
 
 	// allTopics is the list of all topics.
 	allTopics = func(tcs []Topics) []string {

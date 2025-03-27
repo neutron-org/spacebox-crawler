@@ -77,7 +77,7 @@ func (a *App) Start(ctx context.Context) error {
 
 		brk = broker.New(a.cfg.BrokerConfig, *a.log)
 
-		raw  = rawModule.New(brk, rpcCli)
+		raw  = rawModule.New(brk, rpcCli, grpcCli)
 		mods = modules.NewModuleLoader().WithLogger(a.log).WithModules(raw)
 
 		tos = ts.NewToStorage()

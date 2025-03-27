@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/bro-n-bro/spacebox-crawler/v2/adapter/storage/model"
+	oracle "github.com/skip-mev/slinky/x/oracle/types"
 )
 
 type (
@@ -24,8 +25,9 @@ type (
 	}
 
 	Client struct {
-		TmsService cmtservice.ServiceClient
-		TxService  tx.ServiceClient
+		TmsService    cmtservice.ServiceClient
+		TxService     tx.ServiceClient
+		OracleService oracle.QueryClient
 
 		conn    *grpc.ClientConn
 		log     *zerolog.Logger
@@ -83,6 +85,7 @@ func (c *Client) Start(ctx context.Context) error {
 
 	c.TmsService = cmtservice.NewServiceClient(grpcConn)
 	c.TxService = tx.NewServiceClient(grpcConn)
+	c.OracleService = oracle.NewQueryClient(grpcConn)
 
 	c.conn = grpcConn
 
