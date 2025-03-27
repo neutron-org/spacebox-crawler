@@ -42,7 +42,13 @@ func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
 		return fmt.Errorf("failed to publish raw block results: %w", err)
 	}
 
-	return m.publishBlockPrices(ctx, block.Height)
+	if m.cfg.StartSlinkyHeight >= 0 && block.Height >= m.cfg.StartSlinkyHeight {
+		if err := m.publishBlockPrices(ctx, block.Height); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (m *Module) publishBlockResults(ctx context.Context, height int64, timestamp time.Time) error {

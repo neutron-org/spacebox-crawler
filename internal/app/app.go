@@ -18,6 +18,7 @@ import (
 	"github.com/bro-n-bro/spacebox-crawler/v2/delivery/server"
 	"github.com/bro-n-bro/spacebox-crawler/v2/internal/rep"
 	"github.com/bro-n-bro/spacebox-crawler/v2/modules"
+	"github.com/bro-n-bro/spacebox-crawler/v2/modules/raw"
 	rawModule "github.com/bro-n-bro/spacebox-crawler/v2/modules/raw"
 	healthchecker "github.com/bro-n-bro/spacebox-crawler/v2/pkg/health_checker"
 	ts "github.com/bro-n-bro/spacebox-crawler/v2/pkg/mapper/to_storage"
@@ -77,7 +78,9 @@ func (a *App) Start(ctx context.Context) error {
 
 		brk = broker.New(a.cfg.BrokerConfig, *a.log)
 
-		raw  = rawModule.New(brk, rpcCli, grpcCli)
+		raw = rawModule.New(raw.Config{
+			StartSlinkyHeight: a.cfg.WorkerConfig.StartSlinkyHeight,
+		}, brk, rpcCli, grpcCli)
 		mods = modules.NewModuleLoader().WithLogger(a.log).WithModules(raw)
 
 		tos = ts.NewToStorage()

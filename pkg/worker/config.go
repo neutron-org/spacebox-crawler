@@ -12,4 +12,5 @@ type Config struct {
 	WorkersCount               int           `env:"WORKERS_COUNT" envDefault:"1"`
 	StartHeight                int64         `env:"START_HEIGHT" envDefault:"-1"`
 	StopHeight                 int64         `env:"STOP_HEIGHT"`
+	StartSlinkyHeight          int64         `env:"START_SLINKY_HEIGHT" envDefault:"-1"`
 }

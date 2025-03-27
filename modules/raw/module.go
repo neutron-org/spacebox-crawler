@@ -23,10 +23,12 @@ type Module struct {
 	rpcClient  *rpcClient.Client
 	grpcClient *grpcClient.Client
 	broker     broker
+	cfg        Config
 }
 
-func New(b broker, rpcCli *rpcClient.Client, grpcCli *grpcClient.Client) *Module {
+func New(cfg Config, b broker, rpcCli *rpcClient.Client, grpcCli *grpcClient.Client) *Module {
 	return &Module{
+		cfg:        cfg,
 		log:        utils.NewModuleLogger(ModuleName),
 		broker:     b,
 		rpcClient:  rpcCli,
