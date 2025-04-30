@@ -44,7 +44,7 @@ func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
 		return fmt.Errorf("failed to publish raw block results: %w", err)
 	}
 
-	if err := m.publishDexPoolMetadata(ctx, block.Height); err != nil {
+	if err := m.publishDexPoolMetadata(ctx, block.Height, block.Timestamp); err != nil {
 		return err
 	}
 
@@ -74,7 +74,7 @@ func (m *Module) publishBlockResults(ctx context.Context, height int64, timestam
 	return m.broker.PublishRawBlockResults(ctx, rawBR)
 }
 
-func (m *Module) publishDexPoolMetadata(ctx context.Context, height int64) error {
+func (m *Module) publishDexPoolMetadata(ctx context.Context, height int64, timestamp time.Time) error {
 	// Get previous number of pools known
 
 	previousHeightResp, err := m.grpcClient.DexService.PoolMetadataAll(
@@ -138,8 +138,12 @@ func (m *Module) publishDexPoolMetadata(ctx context.Context, height int64) error
 
 	// publish
 	rawDexPoolMetadata := struct {
+		Timestamp    time.Time          `json:"timestamp"`
+		Height       int64              `json:"height"`
 		PoolMetadata []dex.PoolMetadata `json:"pool_metadata"`
 	}{
+		Timestamp:    timestamp,
+		Height:       height,
 		PoolMetadata: poolMetadata,
 	}
 	err = m.broker.PublishRawDexPoolMetadata(ctx, rawDexPoolMetadata)
