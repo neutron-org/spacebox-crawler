@@ -23,3 +23,7 @@ func (b *Broker) PublishRawGenesis(_ context.Context, g interface{}) error {
 func (b *Broker) PublishRawSlinkyPrices(ctx context.Context, prices interface{}) error {
 	return b.marshalAndProduce(RawSlinkyPrices, prices)
 }
+
+func (b *Broker) PublishRawDexPoolMetadata(ctx context.Context, prices interface{}) error {
+	return b.marshalAndProduce(RawDexPoolMetadata, prices)
+}

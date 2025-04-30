@@ -80,6 +80,7 @@ func (a *App) Start(ctx context.Context) error {
 
 		raw = rawModule.New(raw.Config{
 			StartSlinkyHeight: a.cfg.WorkerConfig.StartSlinkyHeight,
+			StartDexHeight:    a.cfg.WorkerConfig.StartDexHeight,
 		}, brk, rpcCli, grpcCli)
 		mods = modules.NewModuleLoader().WithLogger(a.log).WithModules(raw)
 

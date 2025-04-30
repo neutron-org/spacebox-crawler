@@ -7,7 +7,9 @@ import (
 	"time"
 
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	jsoniter "github.com/json-iterator/go"
+	dex "github.com/neutron-org/neutron/v5/x/dex/types"
 	oracle "github.com/skip-mev/slinky/x/oracle/types"
 
 	"github.com/bro-n-bro/spacebox-crawler/v2/types"
@@ -42,6 +44,10 @@ func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
 		return fmt.Errorf("failed to publish raw block results: %w", err)
 	}
 
+	if err := m.publishDexPoolMetadata(ctx, block.Height); err != nil {
+		return err
+	}
+
 	if m.cfg.StartSlinkyHeight >= 0 && block.Height >= m.cfg.StartSlinkyHeight {
 		if err := m.publishBlockPrices(ctx, block.Height); err != nil {
 			return err
@@ -66,6 +72,82 @@ func (m *Module) publishBlockResults(ctx context.Context, height int64, timestam
 	}
 
 	return m.broker.PublishRawBlockResults(ctx, rawBR)
+}
+
+func (m *Module) publishDexPoolMetadata(ctx context.Context, height int64) error {
+	// Get previous number of pools known
+
+	previousHeightResp, err := m.grpcClient.DexService.PoolMetadataAll(
+		metadata.NewOutgoingContext(ctx, metadata.Pairs("x-cosmos-block-height", fmt.Sprintf("%d", height-1))),
+		&dex.QueryAllPoolMetadataRequest{
+			Pagination: &query.PageRequest{
+				Limit:      1,
+				CountTotal: true,
+			},
+		},
+	)
+	if err != nil {
+		if height > m.cfg.StartDexHeight {
+			return fmt.Errorf("failed to get previous height pool metadata count: %w", err)
+		} else {
+			previousHeightResp = &dex.QueryAllPoolMetadataResponse{
+				Pagination: &query.PageResponse{},
+			}
+		}
+	}
+	heightResp, err := m.grpcClient.DexService.PoolMetadataAll(
+		metadata.NewOutgoingContext(ctx, metadata.Pairs("x-cosmos-block-height", fmt.Sprintf("%d", height))),
+		&dex.QueryAllPoolMetadataRequest{
+			Pagination: &query.PageRequest{
+				Offset:     previousHeightResp.Pagination.Total,
+				CountTotal: true,
+			},
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("failed to get first page of pool metadata: %w", err)
+	}
+
+	// get pool metadata
+	poolMetadata := heightResp.PoolMetadata
+
+	// get multiple pages of data if needed
+	nextKey := heightResp.Pagination.NextKey
+	for {
+		if nextKey != nil {
+			nextPageHeightResp, err := m.grpcClient.DexService.PoolMetadataAll(
+				metadata.NewOutgoingContext(ctx, metadata.Pairs("x-cosmos-block-height", fmt.Sprintf("%d", height))),
+				&dex.QueryAllPoolMetadataRequest{
+					Pagination: &query.PageRequest{
+						Offset:     previousHeightResp.Pagination.Total,
+						Key:        nextKey,
+						CountTotal: true,
+					},
+				},
+			)
+			if err != nil {
+				return fmt.Errorf("failed to get next page of pool metadata: %w", err)
+			}
+			// append rows into collection
+			poolMetadata = append(poolMetadata, nextPageHeightResp.PoolMetadata...)
+			nextKey = nextPageHeightResp.Pagination.NextKey
+		} else {
+			break
+		}
+	}
+
+	// publish
+	rawDexPoolMetadata := struct {
+		PoolMetadata []dex.PoolMetadata `json:"pool_metadata"`
+	}{
+		PoolMetadata: poolMetadata,
+	}
+	err = m.broker.PublishRawDexPoolMetadata(ctx, rawDexPoolMetadata)
+	if err != nil {
+		return fmt.Errorf("failed to publish DEX pool metadata: %w", err)
+	}
+
+	return nil
 }
 
 func (m *Module) publishBlockPrices(ctx context.Context, height int64) error {

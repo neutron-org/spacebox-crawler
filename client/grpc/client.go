@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/bro-n-bro/spacebox-crawler/v2/adapter/storage/model"
+	dex "github.com/neutron-org/neutron/v5/x/dex/types"
 	oracle "github.com/skip-mev/slinky/x/oracle/types"
 )
 
@@ -27,6 +28,7 @@ type (
 	Client struct {
 		TmsService    cmtservice.ServiceClient
 		TxService     tx.ServiceClient
+		DexService    dex.QueryClient
 		OracleService oracle.QueryClient
 
 		conn    *grpc.ClientConn
@@ -85,6 +87,7 @@ func (c *Client) Start(ctx context.Context) error {
 
 	c.TmsService = cmtservice.NewServiceClient(grpcConn)
 	c.TxService = tx.NewServiceClient(grpcConn)
+	c.DexService = dex.NewQueryClient(grpcConn)
 	c.OracleService = oracle.NewQueryClient(grpcConn)
 
 	c.conn = grpcConn

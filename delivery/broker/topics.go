@@ -1,13 +1,14 @@
 package broker
 
 var (
-	RawBlock        Topic = newTopic("raw_block")
-	RawBlockResults Topic = newTopic("raw_block_results")
-	RawGenesis      Topic = newTopic("raw_genesis")
-	RawTransaction  Topic = newTopic("raw_transaction")
-	RawSlinkyPrices Topic = newTopic("raw_slinky_prices")
+	RawBlock           Topic = newTopic("raw_block")
+	RawBlockResults    Topic = newTopic("raw_block_results")
+	RawGenesis         Topic = newTopic("raw_genesis")
+	RawTransaction     Topic = newTopic("raw_transaction")
+	RawSlinkyPrices    Topic = newTopic("raw_slinky_prices")
+	RawDexPoolMetadata Topic = newTopic("raw_dex_pool_metadata")
 
-	rawTopics = Topics{RawBlock, RawTransaction, RawBlockResults, RawSlinkyPrices, RawGenesis}
+	rawTopics = Topics{RawBlock, RawTransaction, RawBlockResults, RawSlinkyPrices, RawDexPoolMetadata, RawGenesis}
 
 	// allTopics is the list of all topics.
 	allTopics = func(tcs []Topics) []string {

@@ -13,4 +13,5 @@ type Config struct {
 	StartHeight                int64         `env:"START_HEIGHT" envDefault:"-1"`
 	StopHeight                 int64         `env:"STOP_HEIGHT"`
 	StartSlinkyHeight          int64         `env:"START_SLINKY_HEIGHT" envDefault:"-1"`
+	StartDexHeight             int64         `env:"START_DEX_HEIGHT" envDefault:"-1"`
 }

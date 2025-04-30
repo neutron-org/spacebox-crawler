@@ -7,5 +7,6 @@ type broker interface {
 	PublishRawTransaction(ctx context.Context, tx interface{}) error
 	PublishRawBlockResults(ctx context.Context, br interface{}) error
 	PublishRawSlinkyPrices(ctx context.Context, prices interface{}) error
+	PublishRawDexPoolMetadata(ctx context.Context, pool_metadata interface{}) error
 	PublishRawGenesis(ctx context.Context, g interface{}) error
 }
