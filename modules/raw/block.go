@@ -136,7 +136,10 @@ func (m *Module) publishDexPoolMetadata(ctx context.Context, height int64, times
 		}
 	}
 
-	// publish
+	// publish metadata array (or empty array) with block height
+	if poolMetadata == nil {
+		poolMetadata = []dex.PoolMetadata{}
+	}
 	rawDexPoolMetadata := struct {
 		Timestamp    time.Time          `json:"timestamp"`
 		Height       int64              `json:"height"`
