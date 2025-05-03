@@ -23,7 +23,7 @@ import (
 	healthchecker "github.com/bro-n-bro/spacebox-crawler/v2/pkg/health_checker"
 	ts "github.com/bro-n-bro/spacebox-crawler/v2/pkg/mapper/to_storage"
 	"github.com/bro-n-bro/spacebox-crawler/v2/pkg/worker"
-	neutronapp "github.com/neutron-org/neutron/v6/app"
+	neutronapp "github.com/neutron-org/neutron/v7/app"
 )
 
 const (

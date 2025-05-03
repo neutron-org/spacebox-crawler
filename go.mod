@@ -5,8 +5,8 @@ go 1.23.1
 toolchain go1.23.4
 
 replace (
-	github.com/CosmWasm/wasmd => github.com/neutron-org/wasmd v0.53.2-neutron.0.20250122164643-8ab684b5eff6
-	github.com/cosmos/admin-module/v2 => github.com/neutron-org/admin-module/v2 v2.0.2
+	github.com/CosmWasm/wasmd => github.com/neutron-org/wasmd v0.54.0-rc0
+	github.com/cosmos/admin-module/v2 => github.com/neutron-org/admin-module/v2 v2.0.3
 	github.com/cosmos/cosmos-sdk => github.com/neutron-org/cosmos-sdk v0.50.13-neutron
 	github.com/cosmos/iavl => github.com/cosmos/iavl v1.2.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
@@ -25,7 +25,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.1.0
 	github.com/joho/godotenv v1.4.0
 	github.com/json-iterator/go v1.1.12
-	github.com/neutron-org/neutron/v6 v6.0.1
+	github.com/neutron-org/neutron/v7 v7.0.0-rc0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.22.0
 	github.com/rs/zerolog v1.33.0
@@ -60,8 +60,8 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.2 // indirect
-	github.com/CosmWasm/wasmd v0.53.2 // indirect
-	github.com/CosmWasm/wasmvm/v2 v2.1.5 // indirect
+	github.com/CosmWasm/wasmd v0.54.0 // indirect
+	github.com/CosmWasm/wasmvm/v2 v2.2.3 // indirect
 	github.com/DataDog/datadog-go v3.2.0+incompatible // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect
 	github.com/aws/aws-sdk-go v1.44.224 // indirect
@@ -90,7 +90,7 @@ require (
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
-	github.com/cosmos/iavl v1.2.2 // indirect
+	github.com/cosmos/iavl v1.2.4 // indirect
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8 v8.2.0 // indirect
 	github.com/cosmos/ibc-go/modules/capability v1.0.1 // indirect
 	github.com/cosmos/ibc-go/v8 v8.7.0 // indirect
