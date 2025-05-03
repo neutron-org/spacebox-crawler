@@ -901,6 +901,8 @@ github.com/neutron-org/admin-module/v2 v2.0.2 h1:XDDFWjvkVBKRf3lBFCazT1zAXZ3dHX8
 github.com/neutron-org/admin-module/v2 v2.0.2/go.mod h1:RfOyabXsdJ5btcOKyKPZDYiZhtuKFubbJMOb8EJZtvA=
 github.com/neutron-org/cosmos-sdk v0.50.13-neutron h1:WpOT+IoQEHP9V7KVwi2ZaOwBap5OzRedEva5IhXWZ5o=
 github.com/neutron-org/cosmos-sdk v0.50.13-neutron/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
+github.com/neutron-org/feemarket v0.0.0-20250127141246-4ffcf3d43464 h1:5mbzd7sqp8pPYWzIhIYKFovMRBL0ru24N2E6dIWjL0o=
+github.com/neutron-org/feemarket v0.0.0-20250127141246-4ffcf3d43464/go.mod h1:DUa6djUsTeMOrbrcIZqWSVxU9IZNCXp96ruaojyBNpc=
 github.com/neutron-org/neutron/v6 v6.0.1 h1:38gaNrhrwRF8yDTEizSXoEKvESSMCFYf+RLA9m8DSHY=
 github.com/neutron-org/neutron/v6 v6.0.1/go.mod h1:MeM9Ix7hmgxXH45CIOnzexhDzOmY0r3Ixc6XzCwc60I=
 github.com/neutron-org/wasmd v0.53.2-neutron.0.20250122164643-8ab684b5eff6 h1:AUYYxKenTOqIoajmOT1vnMKaTQevStZzzjaid+bwMUk=
@@ -1052,8 +1054,6 @@ github.com/skip-mev/block-sdk/v2 v2.1.5 h1:3uoYG2ayP253wiohBPKdD3LrkJGd1Kgw914mm
 github.com/skip-mev/block-sdk/v2 v2.1.5/go.mod h1:E8SvITZUdxkes3gI3+kgESZL+NLffkcLKnowUgYTOf4=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610 h1:4JlsiRVt/YZOvrKH525T7sZXgEWUEjqSDMwE6fXNbdo=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610/go.mod h1:kB8gFZX07CyJnw8q9iEZijI3qJTIe1K/Y++P5VGkrcg=
-github.com/skip-mev/feemarket v1.1.1 h1:L34K7N2J6o635kzNYRAvQ93+hAFtSiJ2t03jmaNx0zw=
-github.com/skip-mev/feemarket v1.1.1/go.mod h1:DUa6djUsTeMOrbrcIZqWSVxU9IZNCXp96ruaojyBNpc=
 github.com/skip-mev/slinky v1.2.0 h1:KxVegrUetwbqramH0Ovmx8Clv8PCAeL1/7aWISEbPBQ=
 github.com/skip-mev/slinky v1.2.0/go.mod h1:mDiBJqXDjUA3oro4v7i1OjLEieGrKP+P+M26Cja1cFs=
 github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1:OnSkiWE9lh6wB0YB77sQom3nweQdgAjqCqsofrRNTgc=
