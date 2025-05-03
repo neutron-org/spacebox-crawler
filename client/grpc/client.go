@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/bro-n-bro/spacebox-crawler/v2/adapter/storage/model"
-	dex "github.com/neutron-org/neutron/v5/x/dex/types"
+	dex "github.com/neutron-org/neutron/v6/x/dex/types"
 	oracle "github.com/skip-mev/slinky/x/oracle/types"
 )
 

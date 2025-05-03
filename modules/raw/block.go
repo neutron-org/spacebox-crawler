@@ -9,7 +9,7 @@ import (
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	jsoniter "github.com/json-iterator/go"
-	dex "github.com/neutron-org/neutron/v5/x/dex/types"
+	dex "github.com/neutron-org/neutron/v6/x/dex/types"
 	oracle "github.com/skip-mev/slinky/x/oracle/types"
 
 	"github.com/bro-n-bro/spacebox-crawler/v2/types"
