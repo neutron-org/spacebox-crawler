@@ -5,9 +5,9 @@ go 1.23.1
 toolchain go1.23.4
 
 replace (
-	github.com/CosmWasm/wasmd => github.com/neutron-org/wasmd v0.51.1
-	github.com/cosmos/admin-module/v2 => github.com/neutron-org/admin-module/v2 v2.0.0
-	github.com/cosmos/cosmos-sdk => github.com/neutron-org/cosmos-sdk v0.50.8-neutron
+	github.com/CosmWasm/wasmd => github.com/neutron-org/wasmd v0.53.2-neutron.0.20250122164643-8ab684b5eff6
+	github.com/cosmos/admin-module/v2 => github.com/neutron-org/admin-module/v2 v2.0.2
+	github.com/cosmos/cosmos-sdk => github.com/neutron-org/cosmos-sdk v0.50.12-neutron
 	github.com/cosmos/iavl => github.com/cosmos/iavl v1.2.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
