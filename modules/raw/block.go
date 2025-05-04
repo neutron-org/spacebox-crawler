@@ -35,10 +35,12 @@ func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
 	if err = m.broker.PublishRawBlock(ctx, rawBlock); err != nil {
 		return fmt.Errorf("failed to publish raw block: %w", err)
 	}
+	m.log.Debug().Int64("height", block.Height).Msg("Published raw_block")
 
 	if err = m.publishBlockResults(ctx, block.Height, block.Timestamp); err != nil {
 		return fmt.Errorf("failed to publish raw block results: %w", err)
 	}
+	m.log.Debug().Int64("height", block.Height).Msg("Published raw_block_results")
 
 	return nil
 }

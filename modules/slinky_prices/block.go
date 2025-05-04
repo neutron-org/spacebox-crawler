@@ -15,6 +15,7 @@ func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
 			return fmt.Errorf("failed to publish block prices: %w", err)
 		}
 	}
+	m.log.Debug().Int64("height", block.Height).Msg("Published Slinky prices")
 	return nil
 }
 
