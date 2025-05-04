@@ -18,8 +18,9 @@ import (
 	"github.com/bro-n-bro/spacebox-crawler/v2/delivery/server"
 	"github.com/bro-n-bro/spacebox-crawler/v2/internal/rep"
 	"github.com/bro-n-bro/spacebox-crawler/v2/modules"
-	"github.com/bro-n-bro/spacebox-crawler/v2/modules/raw"
+	dexPoolsModule "github.com/bro-n-bro/spacebox-crawler/v2/modules/dex_pools"
 	rawModule "github.com/bro-n-bro/spacebox-crawler/v2/modules/raw"
+	slinkyPricesModule "github.com/bro-n-bro/spacebox-crawler/v2/modules/slinky_prices"
 	healthchecker "github.com/bro-n-bro/spacebox-crawler/v2/pkg/health_checker"
 	ts "github.com/bro-n-bro/spacebox-crawler/v2/pkg/mapper/to_storage"
 	"github.com/bro-n-bro/spacebox-crawler/v2/pkg/worker"
@@ -78,11 +79,14 @@ func (a *App) Start(ctx context.Context) error {
 
 		brk = broker.New(a.cfg.BrokerConfig, *a.log)
 
-		raw = rawModule.New(raw.Config{
-			StartSlinkyHeight: a.cfg.WorkerConfig.StartSlinkyHeight,
-			StartDexHeight:    a.cfg.WorkerConfig.StartDexHeight,
+		raw      = rawModule.New(rawModule.Config{}, brk, rpcCli, grpcCli)
+		dexPools = dexPoolsModule.New(dexPoolsModule.Config{
+			StartDexHeight: a.cfg.WorkerConfig.StartDexHeight,
 		}, brk, rpcCli, grpcCli)
-		mods = modules.NewModuleLoader().WithLogger(a.log).WithModules(raw)
+		prices = slinkyPricesModule.New(slinkyPricesModule.Config{
+			StartSlinkyHeight: a.cfg.WorkerConfig.StartSlinkyHeight,
+		}, brk, rpcCli, grpcCli)
+		mods = modules.NewModuleLoader().WithLogger(a.log).WithModules(raw, dexPools, prices)
 
 		tos = ts.NewToStorage()
 		wrk = worker.New(a.cfg.WorkerConfig, *a.log, brk, rpcCli, grpcCli, mods.Build(), sto, cod, *tos)
