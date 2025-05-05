@@ -46,9 +46,11 @@ func (m *Module) publishBlockPrices(ctx context.Context, height int64) error {
 
 	// Combine data and publish
 	rawPrices := struct {
+		Height   int64                        `json:"height"`
 		Mappings []oracle.CurrencyPairMapping `json:"mappings"`
 		Prices   []oracle.GetPriceResponse    `json:"prices"`
 	}{
+		Height:   height,
 		Mappings: pairsResp.Mappings,
 		Prices:   pricesResp.Prices,
 	}
