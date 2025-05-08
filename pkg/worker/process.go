@@ -70,7 +70,8 @@ func (w *Worker) processHeight(ctx context.Context, workerIndex int, height int6
 				"if you want to process this height again see PROCESS_ERROR_BLOCKS ENV")
 		}
 
-		return
+		// allow previously fetched blocks to be fetched again
+		// return
 	}
 
 	if height == 0 {
