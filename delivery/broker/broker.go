@@ -141,13 +141,10 @@ func (b *Broker) produce(topic Topic, data []byte) error {
 		return nil
 	}
 
-	deliveryChan := make(chan kafka.Event)
-	defer close(deliveryChan)
-
 	err := b.p.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: topic, Partition: kafka.PartitionAny},
 		Value:          data,
-	}, deliveryChan)
+	}, nil)
 
 	if kafkaError, ok := err.(kafka.Error); ok && kafkaError.Code() == kafka.ErrQueueFull {
 		b.log.Info().Str("topic", *topic).Msg("kafka local queue full error. Going to Flush then retry")
@@ -160,14 +157,6 @@ func (b *Broker) produce(topic Topic, data []byte) error {
 
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("produce %s fail", *topic))
-	}
-
-	// Wait for delivery report
-	e := <-deliveryChan
-	m := e.(*kafka.Message)
-
-	if err := m.TopicPartition.Error; err != nil {
-		return errors.Wrap(err, fmt.Sprintf("delivery failed for %s", *topic))
 	}
 
 	return nil
