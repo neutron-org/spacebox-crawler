@@ -157,22 +157,31 @@ func (w *Worker) Start(_ context.Context) error {
 	}
 
 	// enqueue block height based on config start/stop heights
+	w.log.Info().Msg("maybe start 1")
 	wg.Add(1)
+	w.log.Info().Msg("maybe start 2")
 	go w.enqueueHeight(ctx, wg, w.cfg.StartHeight, stopHeight)
-
+	w.log.Info().Msg("maybe done 1")
 	// graceful shutdown the application if processing is done
 	go func(wg *sync.WaitGroup) {
+		w.log.Info().Msg("maybe done 2")
 		if w.cfg.ProcessNewBlocks { // we want to process new blocks
+			w.log.Info().Msg("maybe done 3")
 			w.log.Info().Msg("exit not needed")
 			return
 		}
+		w.log.Info().Msg("maybe done 4")
 		wg.Wait()
+		w.log.Info().Msg("maybe done 5")
 		w.log.Info().Msg("process block height done! stop program")
 		if err := syscall.Kill(syscall.Getpid(), syscall.SIGINT); err != nil {
+			w.log.Info().Msg("maybe done 6")
 			panic(err)
 		}
+		w.log.Info().Msg("maybe done 7")
 	}(wg)
 
+	w.log.Info().Msg("maybe done 8")
 	return nil
 }
 
