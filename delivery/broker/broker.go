@@ -170,6 +170,8 @@ func (b *Broker) produce(topic Topic, data []byte) error {
 		return errors.Wrap(err, fmt.Sprintf("delivery failed for %s", *topic))
 	}
 
+	b.log.Info().Str("topic", *topic).Msg("kafka delivery success")
+
 	return nil
 }
 
