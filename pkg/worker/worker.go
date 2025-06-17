@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"syscall"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/prometheus/client_golang/prometheus"
@@ -163,14 +162,12 @@ func (w *Worker) Start(_ context.Context) error {
 	// graceful shutdown the application if processing is done
 	go func(wg *sync.WaitGroup) {
 		if w.cfg.ProcessNewBlocks { // we want to process new blocks
-			w.log.Info().Msg("exit not needed")
+			w.log.Info().Msg("exit not needed - processing new blocks")
 			return
 		}
 		wg.Wait()
-		w.log.Info().Msg("process block height done! stop program")
-		if err := syscall.Kill(syscall.Getpid(), syscall.SIGINT); err != nil {
-			panic(err)
-		}
+		w.log.Info().Msg("process block height done! initiating graceful shutdown")
+		w.stopProcessing() // This will trigger the proper shutdown sequence through context cancellation
 	}(wg)
 
 	return nil
