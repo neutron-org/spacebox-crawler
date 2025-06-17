@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"syscall"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/prometheus/client_golang/prometheus"
@@ -167,7 +168,12 @@ func (w *Worker) Start(_ context.Context) error {
 		}
 		wg.Wait()
 		w.log.Info().Msg("process block height done! initiating graceful shutdown")
-		w.stopProcessing() // This will trigger the proper shutdown sequence through context cancellation
+		w.stopProcessing() // Stop worker's processing
+
+		// Send SIGTERM to trigger application's graceful shutdown
+		if err := syscall.Kill(syscall.Getpid(), syscall.SIGTERM); err != nil {
+			w.log.Error().Err(err).Msg("failed to send SIGTERM signal")
+		}
 	}(wg)
 
 	return nil
