@@ -2,7 +2,6 @@ package worker
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"syscall"
 
@@ -31,7 +30,7 @@ type (
 		metrics *metrics
 
 		stopProcessing         func()
-		stopWsListener         func()
+		stopEnqueueNewBlocks   func()
 		stopEnqueueHeight      func()
 		stopEnqueueErrorBlocks func()
 
@@ -134,21 +133,18 @@ func (w *Worker) Start(_ context.Context) error {
 	}
 
 	// spawn workers
-	for i := 0; i < workersCount; i++ {
+	for i := range workersCount {
 		w.wg.Add(1)
 		go w.process(ctx, i, w.cfg.RecoveryMode) // run processing block function
 	}
 
-	// subscribe to process new blocks by websocket
-	if w.cfg.ProcessNewBlocks {
-		eventCh, err := w.rpcClient.SubscribeNewBlocks(ctx)
-		if err != nil {
-			return fmt.Errorf("failed to subscribe to new blocks: %w", err)
-		}
-		go w.enqueueNewBlocks(ctx, eventCh)
-	}
-
 	wg := &sync.WaitGroup{}
+
+	// enqueue new blocks height
+	if w.cfg.ProcessNewBlocks {
+		wg.Add(1)
+		go w.enqueueNewBlocks(ctx, wg)
+	}
 
 	// enqueue error blocks height
 	if w.cfg.ProcessErrorBlocks {
@@ -181,7 +177,7 @@ func (w *Worker) Stop(_ context.Context) error {
 	w.stopEnqueueErrorBlocks()
 
 	if w.cfg.ProcessNewBlocks {
-		w.stopWsListener()
+		w.stopEnqueueNewBlocks()
 	}
 
 	close(w.heightCh)

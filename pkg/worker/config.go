@@ -3,6 +3,7 @@ package worker
 import "time"
 
 type Config struct {
+	ProcessNewBlocksInterval   time.Duration `env:"PROCESS_NEW_BLOCKS_INTERVAL" envDefault:"1s"`
 	ProcessErrorBlocksInterval time.Duration `env:"PROCESS_ERROR_BLOCKS_INTERVAL" envDefault:"1m"`
 	ProcessNewBlocks           bool          `env:"SUBSCRIBE_NEW_BLOCKS"` // FIXME: or use ws enabled???
 	ProcessErrorBlocks         bool          `env:"PROCESS_ERROR_BLOCKS" envDefault:"true"`
