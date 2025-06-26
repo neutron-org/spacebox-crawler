@@ -9,15 +9,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/timeout"
+	dex "github.com/neutron-org/neutron/v6/x/dex/types"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rs/zerolog"
+	oracle "github.com/skip-mev/slinky/x/oracle/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/bro-n-bro/spacebox-crawler/v2/adapter/storage/model"
-	dex "github.com/neutron-org/neutron/v6/x/dex/types"
-	oracle "github.com/skip-mev/slinky/x/oracle/types"
 )
 
 type (

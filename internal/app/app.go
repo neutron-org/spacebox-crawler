@@ -5,6 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	neutronapp "github.com/neutron-org/neutron/v6/app"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -24,7 +25,6 @@ import (
 	healthchecker "github.com/bro-n-bro/spacebox-crawler/v2/pkg/health_checker"
 	ts "github.com/bro-n-bro/spacebox-crawler/v2/pkg/mapper/to_storage"
 	"github.com/bro-n-bro/spacebox-crawler/v2/pkg/worker"
-	neutronapp "github.com/neutron-org/neutron/v6/app"
 )
 
 const (
