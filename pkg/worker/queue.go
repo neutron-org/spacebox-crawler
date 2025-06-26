@@ -47,6 +47,9 @@ func (w *Worker) enqueueNewBlocks(ctx context.Context, wg *sync.WaitGroup) {
 		return
 	}
 
+	// process the first new block height to prevent double processing attempts later
+	w.heightCh <- startHeight
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -59,7 +62,7 @@ func (w *Worker) enqueueNewBlocks(ctx context.Context, wg *sync.WaitGroup) {
 				continue
 			}
 
-			for height := startHeight; height <= stopHeight; height++ {
+			for height := startHeight + 1; height <= stopHeight; height++ {
 				w.log.Info().Int64("height", height).Msg("enqueueing new block")
 
 				// safe from closed channel
