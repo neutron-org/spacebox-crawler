@@ -5,8 +5,9 @@ import "time"
 type Config struct {
 	ProcessNewBlocksInterval   time.Duration `env:"PROCESS_NEW_BLOCKS_INTERVAL" envDefault:"1s"`
 	ProcessErrorBlocksInterval time.Duration `env:"PROCESS_ERROR_BLOCKS_INTERVAL" envDefault:"1m"`
-	ProcessNewBlocks           bool          `env:"SUBSCRIBE_NEW_BLOCKS"` // FIXME: or use ws enabled???
+	ProcessNewBlocks           bool          `env:"PROCESS_NEW_BLOCKS" envDefault:"false"`
 	ProcessErrorBlocks         bool          `env:"PROCESS_ERROR_BLOCKS" envDefault:"true"`
+	ReprocessBlocks            bool          `env:"REPROCESS_BLOCKS" envDefault:"false"`
 	MetricsEnabled             bool          `env:"METRICS_ENABLED" envDefault:"false"`
 	RecoveryMode               bool          `env:"RECOVERY_MODE" envDefault:"false"`
 	ProcessGenesis             bool          `env:"PROCESS_GENESIS" envDefault:"true"`

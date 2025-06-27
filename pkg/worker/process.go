@@ -59,7 +59,7 @@ func (w *Worker) processHeight(ctx context.Context, workerIndex int, height int6
 		}()
 	}
 
-	if err := w.checkOrCreateBlockInStorage(ctx, height); err != nil {
+	if err := w.checkOrCreateBlockInStorage(ctx, height); err != nil && !w.cfg.ReprocessBlocks {
 		switch {
 		case errors.Is(err, ErrBlockProcessed):
 			w.log.Debug().Int64(keyHeight, height).Msg("block already processed. skip height")
