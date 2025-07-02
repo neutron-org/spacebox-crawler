@@ -102,8 +102,8 @@ func (w *Worker) Start(_ context.Context) error {
 	w.heightCh = make(chan int64, workersCount)
 
 	stopHeight := w.cfg.StopHeight
-	// check if stop height is empty, and we want to process height range from config
-	if stopHeight <= 0 && w.cfg.StartHeight >= 0 {
+	// check if stop height is empty or less than start height, and we want to process height range from config
+	if w.cfg.StartHeight >= 0 && (stopHeight <= 0 || stopHeight < w.cfg.StartHeight) {
 		var err error
 
 		stopHeight, err = w.rpcClient.GetLastBlockHeight(ctx)
@@ -174,7 +174,10 @@ func (w *Worker) Start(_ context.Context) error {
 
 func (w *Worker) Stop(_ context.Context) error {
 	w.stopEnqueueHeight()
-	w.stopEnqueueErrorBlocks()
+
+	if w.cfg.ProcessErrorBlocks {
+		w.stopEnqueueErrorBlocks()
+	}
 
 	if w.cfg.ProcessNewBlocks {
 		w.stopEnqueueNewBlocks()
