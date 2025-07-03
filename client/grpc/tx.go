@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"encoding/hex"
+	"strings"
 	"time"
 
 	cometbfttypes "github.com/cometbft/cometbft/types"
@@ -23,20 +24,24 @@ func (c *Client) Txs(ctx context.Context, height int64, txs cometbfttypes.Txs) (
 		if err != nil {
 			// treat common known error differently
 			if i == 0 && err.Error() == "rpc error: code = Unknown desc = codespace sdk code 2: "+
-				"tx parse error: expected 2 wire type, got 0" {
+				"tx parse error: expected 2 wire type, got 0" ||
+				strings.HasPrefix(err.Error(), "rpc error: code = NotFound desc = tx not found:") {
 				// just log this one quietly
 				c.log.Debug().Err(err).Int64("height", height).Msgf("GetTx error on txhash: %s", hash)
-			} else {
-				_ = c.storage.InsertErrorTx(ctx, model.Tx{
-					Created:      time.Now(),
-					ErrorMessage: err.Error(),
-					Hash:         hash,
-					Height:       height,
-				})
 
-				c.log.Warn().Err(err).Int64("height", height).Msgf("GetTx error on txhash: %s", hash)
+				continue
 			}
-			continue
+
+			_ = c.storage.InsertErrorTx(ctx, model.Tx{
+				Created:      time.Now(),
+				ErrorMessage: err.Error(),
+				Hash:         hash,
+				Height:       height,
+			})
+
+			c.log.Warn().Err(err).Int64("height", height).Msgf("GetTx error on txhash: %s", hash)
+
+			return nil, err
 		}
 
 		txResponses = append(txResponses, &tx.GetTxResponse{Tx: respPb.Tx, TxResponse: respPb.TxResponse})
