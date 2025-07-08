@@ -12,10 +12,12 @@ import (
 )
 
 func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
-	if err := m.publishDexPoolMetadata(ctx, block.Height, block.Timestamp); err != nil {
-		return fmt.Errorf("failed to publish dex pool metadata: %w", err)
+	if m.cfg.StartDexHeight >= 0 {
+		if err := m.publishDexPoolMetadata(ctx, block.Height, block.Timestamp); err != nil {
+			return fmt.Errorf("failed to publish dex pool metadata: %w", err)
+		}
+		m.log.Debug().Int64("height", block.Height).Msg("Published DEX pool metadata")
 	}
-	m.log.Debug().Int64("height", block.Height).Msg("Published DEX pool metadata")
 	return nil
 }
 
