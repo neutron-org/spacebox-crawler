@@ -1,14 +1,15 @@
-package dex_pools
+package dexpools
 
 import (
 	"context"
 	"fmt"
 	"time"
 
-	"github.com/bro-n-bro/spacebox-crawler/v2/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	dex "github.com/neutron-org/neutron/v6/x/dex/types"
 	"google.golang.org/grpc/metadata"
+
+	"github.com/bro-n-bro/spacebox-crawler/v2/types"
 )
 
 func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
@@ -58,10 +59,15 @@ func (m *Module) publishDexPoolMetadata(ctx context.Context, height int64, times
 
 	// get multiple pages of data if needed
 	nextKey := heightResp.Pagination.NextKey
+
+	var nextPageHeightResp *dex.QueryAllPoolMetadataResponse
+
 	for {
 		if nextKey != nil {
-			nextPageHeightResp, err := m.grpcClient.DexService.PoolMetadataAll(
-				metadata.NewOutgoingContext(ctx, metadata.Pairs("x-cosmos-block-height", fmt.Sprintf("%d", height))),
+			nextPageHeightResp, err = m.grpcClient.DexService.PoolMetadataAll(
+				metadata.NewOutgoingContext(
+					ctx, metadata.Pairs("x-cosmos-block-height", fmt.Sprintf("%d", height)),
+				),
 				&dex.QueryAllPoolMetadataRequest{
 					Pagination: &query.PageRequest{
 						Offset:     previousHeightResp.Pagination.Total,
@@ -87,12 +93,12 @@ func (m *Module) publishDexPoolMetadata(ctx context.Context, height int64, times
 	}
 	rawDexPoolMetadata := struct {
 		Timestamp    time.Time          `json:"timestamp"`
-		Height       int64              `json:"height"`
 		PoolMetadata []dex.PoolMetadata `json:"pool_metadata"`
+		Height       int64              `json:"height"`
 	}{
 		Timestamp:    timestamp,
-		Height:       height,
 		PoolMetadata: poolMetadata,
+		Height:       height,
 	}
 	err = m.broker.PublishRawDexPoolMetadata(ctx, rawDexPoolMetadata)
 	if err != nil {

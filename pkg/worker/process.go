@@ -59,7 +59,7 @@ func (w *Worker) processHeight(ctx context.Context, workerIndex int, height int6
 		}()
 	}
 
-	if err := w.checkOrCreateBlockInStorage(ctx, height); err != nil {
+	if err := w.checkOrCreateBlockInStorage(ctx, height); err != nil && !w.cfg.ReprocessBlocks {
 		switch {
 		case errors.Is(err, ErrBlockProcessed):
 			w.log.Debug().Int64(keyHeight, height).Msg("block already processed. skip height")
@@ -95,9 +95,7 @@ func (w *Worker) processHeight(ctx context.Context, workerIndex int, height int6
 			return
 		}
 
-		if err = w.storage.SetProcessedStatus(ctx, height); err != nil {
-			w.log.Error().Err(err).Int64(keyHeight, height).Msg("can't set processed status in storage")
-		}
+		w.setProcessedStatus(ctx, height)
 
 		return
 	}
@@ -219,8 +217,16 @@ func (w *Worker) processHeight(ctx context.Context, workerIndex int, height int6
 		return
 	}
 
+	w.setProcessedStatus(ctx, height)
+}
+
+func (w *Worker) setProcessedStatus(ctx context.Context, height int64) {
 	if err := w.storage.SetProcessedStatus(ctx, height); err != nil {
 		w.log.Error().Err(err).Int64(keyHeight, height).Msg("can't set processed status in storage")
+	}
+
+	if err := w.storage.DeleteErrorTxs(ctx, height); err != nil {
+		w.log.Error().Err(err).Int64(keyHeight, height).Msg("can't delete error txs in storage")
 	}
 }
 

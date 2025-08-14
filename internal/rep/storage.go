@@ -16,6 +16,7 @@ type Storage interface {
 	GetErrorBlockHeights(ctx context.Context) ([]int64, error)
 
 	InsertErrorTx(ctx context.Context, message model.Tx) error
+	DeleteErrorTxs(ctx context.Context, height int64) error
 	InsertErrorMessage(ctx context.Context, message model.Message) error
 
 	Ping(ctx context.Context) error

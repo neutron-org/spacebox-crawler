@@ -4,15 +4,12 @@ import (
 	"context"
 	"sync"
 	"time"
-
-	cometbftcoreypes "github.com/cometbft/cometbft/rpc/core/types"
-	cometbfttypes "github.com/cometbft/cometbft/types"
 )
 
 func (w *Worker) enqueueHeight(ctx context.Context, wg *sync.WaitGroup, startHeight, stopHeight int64) {
 	defer wg.Done()
 
-	w.log.Debug().Msgf("try to parse: %d count of blocks", stopHeight-startHeight)
+	w.log.Debug().Msgf("try to parse: %d count of blocks", stopHeight-startHeight+1)
 
 	ctx, w.stopEnqueueHeight = context.WithCancel(ctx)
 	defer w.stopEnqueueHeight()
@@ -33,32 +30,51 @@ func (w *Worker) enqueueHeight(ctx context.Context, wg *sync.WaitGroup, startHei
 	}
 }
 
-func (w *Worker) enqueueNewBlocks(ctx context.Context, eventCh <-chan cometbftcoreypes.ResultEvent) {
-	ctx, w.stopWsListener = context.WithCancel(ctx)
-	defer w.stopWsListener()
-	w.log.Info().Msg("listening for new block events")
+func (w *Worker) enqueueNewBlocks(ctx context.Context, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	ticker := time.NewTicker(w.cfg.ProcessNewBlocksInterval)
+	defer ticker.Stop()
+
+	ctx, w.stopEnqueueNewBlocks = context.WithCancel(ctx)
+	defer w.stopEnqueueNewBlocks()
+
+	w.log.Info().Msg("parsing new blocks")
+
+	startHeight, err := w.rpcClient.GetLastBlockHeight(ctx)
+	if err != nil {
+		w.log.Error().Err(err).Str("func", "GetLastBlockHeight").Msg("can't enqueueNewBlocks")
+		return
+	}
+
+	// process the first new block height to prevent double processing attempts later
+	w.heightCh <- startHeight
 
 	for {
 		select {
 		case <-ctx.Done():
-			w.log.Info().Msg("stop new block listener")
+			w.log.Info().Msg("stop new block parsing")
 			return
-		case e := <-eventCh:
-			newBlock, ok := e.Data.(cometbfttypes.EventDataNewBlock)
-			if !ok {
-				w.log.Warn().Msg("failed to cast ws event to EventDataNewBlock type")
+		case <-ticker.C:
+			stopHeight, err := w.rpcClient.GetLastBlockHeight(ctx)
+			if err != nil {
+				w.log.Warn().Err(err).Str("func", "GetLastBlockHeight").Msg("can't enqueueNewBlocks")
 				continue
 			}
 
-			height := newBlock.Block.Header.Height
-			w.log.Info().Int64("height", height).Msg("enqueueing new block")
+			for height := startHeight + 1; height <= stopHeight; height++ {
+				w.log.Info().Int64("height", height).Msg("enqueueing new block")
 
-			select {
-			case <-ctx.Done():
-				w.log.Info().Msg("stop new block listener")
-				return
-			case w.heightCh <- height:
+				// safe from closed channel
+				select {
+				case <-ctx.Done():
+					w.log.Info().Msg("stop new block parsing")
+					return
+				case w.heightCh <- height:
+				}
 			}
+
+			startHeight = stopHeight
 		}
 	}
 }

@@ -1,12 +1,13 @@
-package slinky_prices
+package slinkyprices
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/bro-n-bro/spacebox-crawler/v2/types"
 	oracle "github.com/skip-mev/slinky/x/oracle/types"
 	"google.golang.org/grpc/metadata"
+
+	"github.com/bro-n-bro/spacebox-crawler/v2/types"
 )
 
 func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
@@ -24,7 +25,9 @@ func (m *Module) publishBlockPrices(ctx context.Context, height int64) error {
 	header := metadata.Pairs("x-cosmos-block-height", fmt.Sprintf("%d", height))
 	ctxWithHeader := metadata.NewOutgoingContext(ctx, header)
 
-	pairsResp, err := m.grpcClient.OracleService.GetCurrencyPairMappingList(ctxWithHeader, &oracle.GetCurrencyPairMappingListRequest{})
+	pairsResp, err := m.grpcClient.OracleService.GetCurrencyPairMappingList(
+		ctxWithHeader, &oracle.GetCurrencyPairMappingListRequest{},
+	)
 	if err != nil {
 		return fmt.Errorf("failed to get currency pair mappings: %w", err)
 	}
@@ -46,13 +49,13 @@ func (m *Module) publishBlockPrices(ctx context.Context, height int64) error {
 
 	// Combine data and publish
 	rawPrices := struct {
-		Height   int64                        `json:"height"`
 		Mappings []oracle.CurrencyPairMapping `json:"mappings"`
 		Prices   []oracle.GetPriceResponse    `json:"prices"`
+		Height   int64                        `json:"height"`
 	}{
-		Height:   height,
 		Mappings: pairsResp.Mappings,
 		Prices:   pricesResp.Prices,
+		Height:   height,
 	}
 
 	err = m.broker.PublishRawSlinkyPrices(ctx, rawPrices)

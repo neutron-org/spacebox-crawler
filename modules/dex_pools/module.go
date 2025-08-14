@@ -1,4 +1,4 @@
-package dex_pools
+package dexpools
 
 import (
 	"context"
@@ -20,21 +20,23 @@ var (
 	_ types.BlockHandler = &Module{}
 )
 
-type Config struct {
-	StartDexHeight int64
-}
+type (
+	broker interface {
+		PublishRawDexPoolMetadata(ctx context.Context, data interface{}) error
+	}
 
-type Module struct {
-	log        *zerolog.Logger
-	rpcClient  *rpcClient.Client
-	grpcClient *grpcClient.Client
-	broker     broker
-	cfg        Config
-}
+	Config struct {
+		StartDexHeight int64
+	}
 
-type broker interface {
-	PublishRawDexPoolMetadata(ctx context.Context, data interface{}) error
-}
+	Module struct {
+		log        *zerolog.Logger
+		rpcClient  *rpcClient.Client
+		grpcClient *grpcClient.Client
+		broker     broker
+		cfg        Config
+	}
+)
 
 func New(cfg Config, b broker, rpcCli *rpcClient.Client, grpcCli *grpcClient.Client) *Module {
 	return &Module{
