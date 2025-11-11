@@ -13,6 +13,10 @@ import (
 )
 
 func (m *Module) HandleBlock(ctx context.Context, block *types.Block) error {
+	// skip module if DEX metadata height start is invalid
+	if !(m.cfg.StartDexHeight > 0) {
+		return nil
+	}
 	if err := m.publishDexPoolMetadata(ctx, block.Height, block.Timestamp); err != nil {
 		return fmt.Errorf("failed to publish dex pool metadata: %w", err)
 	}
